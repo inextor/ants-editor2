@@ -1,1 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+button {
+    font-family: inherit;
+    font-size: 100%;
+    padding: 0.5em 1em;
+    color: #444;
+    color: rgba(0,0,0,.8);
+    border: 1px solid #999;
+    border: transparent;
+    text-decoration: none;
+    border-radius: 2px;
+    background-color: #45a6ff;
+    color: white;
+}
