@@ -7,7 +7,7 @@ import {Note, Note_Term} from './Models';
 export class NoteDb
 {
 	database: DatabaseStore;
-    debug: boolean = true;
+	debug: boolean = true;
 	constructor()
 	{
 		this.database = DatabaseStore.builder
@@ -17,8 +17,6 @@ export class NoteDb
 			OFFLINE_DB_SCHEMA.schema
 		);
 	}
-
-
 
 	updateAllNotes(notes:Note[]):Promise<Note[]>
 	{
@@ -105,7 +103,7 @@ export class NoteDb
 
 		for(let word of all_terms)
 		{
-			if( word == '' || invalid.test( word ) ) 
+			if( word == '' || invalid.test( word ) )
 				continue;
 
 			counter++;
@@ -118,8 +116,6 @@ export class NoteDb
 
 		return terms;
 	}
-
-
 
 	getNoteFromText(text: string):Partial<Note>
 	{
@@ -143,5 +139,10 @@ export class NoteDb
 			access_count	: 1
 		};
 		return obj;
+	}
+	getAll()
+	{
+		let option = Options.build({index:'last_access','direction':'prev'});
+		return this.database.getAll('notes',option);
 	}
 }
