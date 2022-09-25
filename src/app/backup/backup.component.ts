@@ -5,29 +5,31 @@ import { Note } from '../classes/Models';
 import { NoteDb } from '../classes/NotesDb';
 
 @Component({
-  selector: 'app-backup',
-  templateUrl: './backup.component.html',
-  styleUrls: ['./backup.component.css']
+	selector: 'app-backup',
+	templateUrl: './backup.component.html',
+	styleUrls: ['./backup.component.css']
 })
 export class BackupComponent implements OnInit {
-    note_array: Note[] = [];
+	note_array: Note[] = [];
 	file:File | null = null;
 	note_db:NoteDb | null = null;
+	use_fast:number = 0;
+
 
 	constructor(public router: Router, public route: ActivatedRoute, public titleService: Title)
 	{
 	}
 
-    ngOnDestroy(): void 
+	ngOnDestroy(): void
 	{
 		if( this.note_db )
 		{
 			this.note_db.close();
 			this.note_db = null;
 		}
-    }
+	}
 
-	ngOnInit(): void 
+	ngOnInit(): void
 	{
 		this.note_db = new NoteDb();
 	}
@@ -91,13 +93,36 @@ export class BackupComponent implements OnInit {
 					if( this.note_db == null )
 						this.note_db = new NoteDb();
 
-					this.note_db.syncSlowNotes( notes )
-					.then((response)=>
+					console.time('sync');
+
+					if( this.use_fast == 0 )
 					{
-						console.log('It works');
-					}).catch((error)=>{
-						console.log('Fail to update', error);
-					});
+						console.log('Using slow');
+						this.note_db.syncSlowNotes( notes )
+						.then((response)=>
+						{
+							console.timeEnd('sync');
+							console.log('It works slow ends');
+						}).catch((error)=>{
+							console.timeEnd('sync');
+							console.log('Fail to update', error);
+						});
+					}
+					else
+					{
+						console.log('Using fast');
+						this.note_db.syncFastNotes( notes )
+						.then((response)=>
+						{
+							console.timeEnd('sync');
+							console.log('It fast ends');
+							console.log('It works');
+						}).catch((error)=>{
+							console.timeEnd('sync');
+							console.log('Fail to update', error);
+						});
+
+					}
 
 				}
 				catch(file_error)

@@ -23,10 +23,50 @@ export class NoteDb
 		return Promise.resolve([]);
 	}
 
-	syncSlowNotes(notes:Note[]):Promise<any>
+	syncFastNotes(notes:Note[]):Promise<any>
 	{
+		let new_notes:Note[] = [];
+		let new_terms:Note_Term[] = [];
+
+		for(let old_note of notes)
+		{
+			let new_note = this.getNoteFromText( old_note.text );
+			new_note.updated = new Date();
+			new_note.id = old_note.id;
+			new_note.access_count = old_note.access_count+1;
+
+			let terms = this.getTerms(old_note.text).map((t)=>
+			{
+				t.note_id = old_note.id;
+				return t as Note_Term;
+			});
+
+			new_notes.push( new_note );
+			new_terms.push( ...terms );
+		}
+
 		return this.database.transaction(['notes','note_terms'],'readwrite',(stores,txt)=>
 		{
+			return Promise.all
+			([
+				stores['notes'].updateAll( notes ),
+				stores['note_terms'].clear()
+				.then(()=>
+				{
+					return stores['note_terms'].addAllFast( new_terms, false );
+				})
+			]).then(()=>{
+				console.log('Ends txt',txt);
+			});
+		}) as Promise<true>;
+	}
+
+	syncSlowNotes(notes:Note[]):Promise<any>
+	{
+		console.log('DOing something');
+		return this.database.transaction(['notes','note_terms'],'readwrite',(stores,txt)=>
+		{
+			console.log('Ading new FOO');
 			let promises:Promise<any>[] = notes.map(n=>this.updateNoteStore(stores,n,n.text,txt));
 			return Promise.all( promises );
 		});
@@ -41,7 +81,7 @@ export class NoteDb
 	{
 		if( this.debug )
 		{
-			console.log(txt);
+			//console.log(txt);
 		}
 
 		let new_note = this.getNoteFromText( text );
@@ -117,7 +157,7 @@ export class NoteDb
 		return terms;
 	}
 
-	getNoteFromText(text: string):Partial<Note>
+	getNoteFromText(text: string):Note
 	{
 		let is_markdown = false;
 
@@ -128,7 +168,8 @@ export class NoteDb
 
 		let title:string = text.trim().replace(/#/g,' ').split('\n')[0].trim();
 
-		let obj:Partial<Note> = {
+		let note:Note = {
+			id: Date.now(),
 			text	: text,
 			title	: title,
 			search	: title.toLowerCase(),
@@ -138,9 +179,10 @@ export class NoteDb
 			tags:[],
 			access_count	: 1
 		};
-		return obj;
+		return note;
 	}
-	getAll()
+
+	getAll():Promise<Note[]>
 	{
 		let option = Options.build({index:'last_access','direction':'prev'});
 		return this.database.getAll('notes',option);
