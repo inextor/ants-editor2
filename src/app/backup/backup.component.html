@@ -1,1 +1,16 @@
-<p>backup works!</p>
+<header>
+	<div>
+		<a routerLink="/">
+			<i class="material-icons">arrow_back_ios</i>
+		</a>
+		<span class="title">Settings</span>
+	</div>
+	<div>
+		<form (submit)="importJson($event)">
+			<div>
+				<input type="file" name="file" (change)="fileChange($event)">
+			</div>
+			<button type="submit">Import</button>
+		</form>
+	</div>
+</header>

@@ -1,0 +1,8 @@
+<ng-container *ngFor="let note of note_array">
+	<a class="note-list-item" data-note-${mode}="${note.id}" [routerLink]="['/view-note',note.id]">
+		<span class="list-item-title">{{note.title}}</span>
+		<span class="list-item-date">{{note.last_access}}</span>
+	</a>
+</ng-container>
+
+<a routerLink="backup">Backup</a>
