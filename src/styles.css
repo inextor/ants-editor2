@@ -4,6 +4,12 @@
 	--header-bg: #263238;
 	--header-height: 55px;
 }
+
+body
+{
+	font-family: Helvetica,Roboto,sans-serif;
+}
+
 button {
     font-family: inherit;
     font-size: 100%;
@@ -26,9 +32,29 @@ header
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+	position: sticky; 
+	top: 0;
     justify-content: flex-start;
+	color: white;
     align-content: stretch;
     align-items: flex-start;
     box-shadow: 0 2px 2px 0 rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 20%), 0 1px 5px 0 rgb(0 0 0 / 12%);
     background-color: #263238;
+}
+
+
+@media screen 
+{
+	body{
+		margin: 0;
+	}
+}
+
+header>div
+{
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+	width: 100%;
+	height: 100%;
 }

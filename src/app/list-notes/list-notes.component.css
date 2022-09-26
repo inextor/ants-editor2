@@ -1,0 +1,54 @@
+a.note-list-item, a:hover.note-list-item
+{
+    border-bottom: 1px solid #eeeeee;
+    display: block;
+    text-decoration: none;
+    padding: 5px 16px;
+}
+
+.note-list-item span {
+	float:right;
+}	
+
+.list-item-title {
+    color: #666666;
+}
+
+a.note-list-item, a:hover.note-list-item {
+    border-bottom: 1px solid #eeeeee;
+    display: block;
+    text-decoration: none;
+    padding: 5px 16px;
+}
+
+.list-item-date {
+    color: #aaaaaa;
+    font-size: 12px;
+}
+
+.list-container
+{
+	margin-top:20px;
+}
+
+
+input
+{
+	border: none;
+    border-bottom-color: currentcolor;
+    border-bottom-style: none;
+    border-bottom-width: medium;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+    display: block;
+    font-size: 16px;
+    font-family: "Helvetica","Arial",sans-serif;
+    margin: 0;
+    padding: 4px 0;
+    width: 100%;
+    background: 0 0;
+    text-align: left;
+    color: inherit;
+
+}
+
+

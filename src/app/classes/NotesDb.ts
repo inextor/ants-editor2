@@ -4,6 +4,12 @@ import { ObjectStore } from '../Finger/ObjectStore';
 import { Options } from '../Finger/OptionsUtils';
 import {Note, Note_Term} from './Models';
 
+interface Index_Note_Term
+{
+	index:number;
+	term:Note_Term;
+}
+
 export class NoteDb
 {
 	database: DatabaseStore;
@@ -130,6 +136,50 @@ export class NoteDb
 	//}
 
 
+	search( name:string ):Promise<Note[]>
+	{
+		return this.database.transaction(['notes','note_terms'],'readonly',(stores,_txt)=>
+		{
+			return this.getTermsIndex( stores['note_terms'], name ).then((terms)=>
+			{
+				let ids = terms.map( i => i.note_id );
+				ids.sort();
+
+				return stores['notes'].getAllByKeyIndex( ids ).then((notes:Note[])=>
+				{
+					console.log('Notes found',notes.length, ids );
+					let indexes:Map<number,Index_Note_Term> =new Map();
+
+					terms.forEach((i:Note_Term,index:number)=>{
+						indexes.set( i.note_id,{ index: index, term: i });
+						//indexes[ i.note_id ] ={ index: index, term: i }
+					});
+
+					let term_notes:Note[] = [];
+
+					notes.forEach((i)=>{
+					    //term_notes.push({ note: i, term: indexes[i.id ].term });
+						i.term  = (indexes.get(i.id) as Index_Note_Term ).term;
+						term_notes.push( i );
+					});
+
+					term_notes.sort(( a,b ) =>
+					{
+						let aa = indexes.get(a.id ) as Index_Note_Term;
+						let bb = indexes.get(b.id ) as Index_Note_Term;
+						if( bb.index == aa.index )
+							return 0;
+
+						return aa.index > bb.index ? 1 : -1;
+					});
+
+					return Promise.resolve( term_notes );
+				});
+			});
+		});
+	}
+
+
 	getTerms(str:string):Partial<Note_Term>[]
 	{
 		let terms:Partial<Note_Term>[] = [];
@@ -187,4 +237,62 @@ export class NoteDb
 		let option = Options.build({index:'last_access','direction':'prev'});
 		return this.database.getAll('notes',option);
 	}
+
+	getTermsIndex( note_terms_store:ObjectStore<Note_Term>, term:string )
+	{
+		let tlower = term.toLowerCase();
+
+		let bigger = tlower.toLowerCase().codePointAt( tlower.length -1 ) as number;
+
+		if( isNaN(bigger)  )
+		{
+			bigger = 0xDFBE;
+		}
+
+		console.log('Code Point', bigger+1);
+		let next = String.fromCodePoint( bigger+1 );
+		let biggerString = tlower.substring(0, tlower.length-1 )+next;
+		let option = Options.build({ index : 'term' , '>=': term.toLowerCase(), '<': biggerString });
+		return note_terms_store.getAll(option)
+		.then(( terms:Note_Term[] )=>
+		{
+			terms.sort((a:Note_Term,b:Note_Term)=>
+			{
+				if( a.position == b.position )
+				{
+					return b.term < a.term ? 1: -1;
+				}
+
+				return b.position < a.position ? 1: -1;
+			});
+
+			let keys:Map<number,boolean> = new Map();
+
+			let finalResult = terms.filter((a:Note_Term) =>{
+
+				if( keys.has( a.note_id) )
+					return false;
+
+				keys.set( a.note_id, true );
+				return true;
+			});
+
+			return Promise.resolve( finalResult );
+		});
+	}
+
+	getCodePoint(term:string)
+	{
+		let to_search = term;
+		while(to_search.length > 0 )
+		{
+			let bigger = to_search.toLowerCase().codePointAt( to_search.length -1 ) as number;
+			if( !isNaN( bigger ) )
+			{
+				return 
+			}
+			to_search = to_search.substring(0,to_search.length-1);
+		}
+	}
+
 }
