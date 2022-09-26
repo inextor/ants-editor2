@@ -1,4 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+:root
+{
+	--header-bg: #263238;
+	--header-height: 55px;
+}
 button {
     font-family: inherit;
     font-size: 100%;
@@ -11,4 +16,19 @@ button {
     border-radius: 2px;
     background-color: #45a6ff;
     color: white;
+}
+
+header
+{
+    height: var( --header-height );
+    padding-left: 16px;
+    padding-right: 16px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
+    align-items: flex-start;
+    box-shadow: 0 2px 2px 0 rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 20%), 0 1px 5px 0 rgb(0 0 0 / 12%);
+    background-color: #263238;
 }
