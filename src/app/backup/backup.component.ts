@@ -5,12 +5,12 @@ import { Note } from '../classes/Models';
 import { NoteDb } from '../classes/NotesDb';
 
 @Component({
-  selector: 'app-backup',
-  templateUrl: './backup.component.html',
-  styleUrls: ['./backup.component.css']
+	selector: 'app-backup',
+	templateUrl: './backup.component.html',
+	styleUrls: ['./backup.component.css']
 })
 export class BackupComponent implements OnInit {
-    note_array: Note[] = [];
+	note_array: Note[] = [];
 	file:File | null = null;
 	note_db:NoteDb | null = null;
 
@@ -18,16 +18,16 @@ export class BackupComponent implements OnInit {
 	{
 	}
 
-    ngOnDestroy(): void 
+	ngOnDestroy(): void
 	{
 		if( this.note_db )
-		{
-			this.note_db.close();
-			this.note_db = null;
-		}
-    }
+			{
+				this.note_db.close();
+				this.note_db = null;
+			}
+	}
 
-	ngOnInit(): void 
+	ngOnInit(): void
 	{
 		this.note_db = new NoteDb();
 	}
@@ -113,4 +113,3 @@ export class BackupComponent implements OnInit {
 		}
 	}
 }
-
