@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Note } from '../classes/Models';
 import { OFFLINE_DB_SCHEMA } from '../constants';
 import { DatabaseStore } from '../Finger/DatabaseStore';
+import { NoteDb } from '../classes/NotesDb';
+
 
 @Component({
 	selector: 'app-list-notes',
@@ -12,31 +14,27 @@ import { DatabaseStore } from '../Finger/DatabaseStore';
 })
 export class ListNotesComponent implements OnInit,OnDestroy
 {
-	database = DatabaseStore.builder
-	(
-		OFFLINE_DB_SCHEMA.name,
-		OFFLINE_DB_SCHEMA.version,
-		OFFLINE_DB_SCHEMA.schema
-	);
-    note_array: Note[] = [];
+	note_db = new NoteDb();
+	note_array: Note[] = [];
 
 	constructor(public router: Router, public route: ActivatedRoute, public titleService: Title)
 	{
 	}
 
-    ngOnDestroy(): void {
-    }
-
-	ngOnInit(): void {
-		this.database.init();
-
-		this.route.paramMap.subscribe((param_map)=>
-		{
-			this.database.getAll('note').then((response)=>{
-				this.note_array = response as Note[];
-			});
-			
-		},(e)=>{console.log(e)});
+	ngOnDestroy(): void {
 	}
 
+	ngOnInit(): void {
+		this.route.paramMap.subscribe((param_map)=>
+		{
+			this.note_db.getAll().then((response)=>{
+				this.note_array = response as Note[];
+			}).catch((error:any)=>{
+				console.log('Error reading', error);
+			});
+
+		},(e:any)=>{
+			console.log(e);
+		});
+	}
 }
