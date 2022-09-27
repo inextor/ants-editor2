@@ -187,4 +187,14 @@ export class NoteDb
 		let option = Options.build({index:'last_access','direction':'prev'});
 		return this.database.getAll('notes',option);
 	}
+
+	get(key:number):Promise<Note>
+	{
+		return this.database.get('notes',key)
+		.then((note)=>{
+			if(!note)
+				throw 'Note not found';
+			return Promise.resolve( note ) as Promise<Note>;
+		});
+	}
 }
