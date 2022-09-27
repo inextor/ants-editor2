@@ -15,6 +15,7 @@ export interface Note
 	updated:Date;
 	last_access:Date;
 	tags:string[];
+	term?:Note_Term;
 }
 
 export interface Note_Term

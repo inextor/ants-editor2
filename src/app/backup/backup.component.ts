@@ -15,7 +15,6 @@ export class BackupComponent implements OnInit {
 	note_db:NoteDb | null = null;
 	use_fast:number = 0;
 
-
 	constructor(public router: Router, public route: ActivatedRoute, public titleService: Title)
 	{
 	}
@@ -138,4 +137,3 @@ export class BackupComponent implements OnInit {
 		}
 	}
 }
-
