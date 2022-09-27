@@ -1,0 +1,10 @@
+.note
+{
+	width: 100%;
+	overflow-x: auto;
+	overflow-y: auto;
+	position:absolute;
+	top: var(--header-height);
+	bottom: 0;
+	left: 0;
+}

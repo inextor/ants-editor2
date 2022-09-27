@@ -18,7 +18,8 @@ export class ViewNoteComponent implements OnInit,OnDestroy{
 	{
 	}
 	ngOnDestroy(): void {
-		throw new Error('Method not implemented.');
+		if( this.note_db )
+			this.note_db.close();
 	}
 
 	ngOnInit(): void {

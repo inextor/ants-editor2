@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ViewNoteComponent } from './view-note.component';
 
-const routes: Routes = [{ path: '', component: ViewNoteComponent }];
+const routes: Routes = [{ path: ':id', component: ViewNoteComponent }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
